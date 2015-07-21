@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 #include <array>
 
-#include "node.cpp"
+#include "node.h"
 
 std::array<unsigned int, 32> makeUid(char c) {
     std::array<unsigned int, 32> result;
