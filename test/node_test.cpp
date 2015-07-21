@@ -3,23 +3,10 @@
 
 #include "node.h"
 
-std::array<unsigned int, 32> makeUid(char c) {
-    std::array<unsigned int, 32> result;
-    for (int i=0; i < 32; i++) {
-        result[i] = c;
-    }
-    return result;
-}
 
 TEST(Node, canGenerateUIDs) {
     std::array<unsigned int, 32> result = generateRandomUID();
     ASSERT_EQ(result.size(), 32);
-}
-
-TEST(Node, exists) {
-    std::array<unsigned int, 32> result = generateRandomUID();
-    Node n(result, "localhost", 3001);
-    ASSERT_EQ(n.buckets.size(), 32);
 }
 
 TEST(Node, xor) {
@@ -28,7 +15,7 @@ TEST(Node, xor) {
     Node n1(first, "localhost", 3001);
     Node n2(second, "localhost", 3002);
 
-    std::array<unsigned int, 32> result = n1 ^ n2;
+    UID result = n1 ^ n2;
     for (int i=0; i < 32; i++) {
         ASSERT_EQ(result[i], 3);
     }

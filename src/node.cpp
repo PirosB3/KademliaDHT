@@ -12,13 +12,40 @@ std::array<unsigned int, 32> generateRandomUID() {
     return result;
 }
 
+std::array<unsigned int, 32> makeUid(char c) {
+    std::array<unsigned int, 32> result;
+    for (int i=0; i < 32; i++) {
+        result[i] = c;
+    }
+    return result;
+}
+
+UID::UID() {
+}
+
+UID::UID(std::array<unsigned int, 32> data) {
+    this->data = data;
+}
+
+bool UID::operator==(const UID& first) const {
+    return this->data == first.data;
+}
+
+bool UID::operator!=(const UID& first) const {
+    return this->data != first.data;
+}
+
+const unsigned int& UID::operator[](int x) const {
+    return this->data[x];
+}
+
 Node::Node(std::array<unsigned int, 32> uid, const char* host, unsigned int port) {
-    this->uid = uid;
+    this->uid = UID(uid);
     this->host = host;
     this->port = port;
 }
 
-std::array<unsigned int, 32> operator^(const Node& first, const Node& second) {
+UID operator^(const Node& first, const Node& second) {
     std::array<unsigned int, 32> result;
     for (int i=0; i < 32; i++) {
         result[i] = first.uid[i] ^ second.uid[i];
