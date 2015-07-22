@@ -31,14 +31,14 @@ TEST(Node, equality) {
     ASSERT_NE(n1,  n3);
 }
 
-TEST(Node, distanceKey) {
+TEST(UID, distanceKey) {
     std::array<unsigned int, 32> first = {
         0, 0, 0, 0, 0, 31, 255, 255, 255,
         255, 255, 255, 255, 255, 255, 255, 255,
         255, 255, 255, 255, 255, 255, 255, 255,
         255, 255, 255, 255, 255, 255, 255
     };
-    Node n1(first, "localhost", 3001);
+    UID n1(first);
     ASSERT_EQ(n1.distanceKey(),  (8 * 5) + 3);
 
 }
@@ -46,5 +46,5 @@ TEST(Node, distanceKey) {
 TEST(Node, distanceKeyZeros) {
     std::array<unsigned int, 32> first = makeUid(0);
     Node n1(first, "localhost", 3001);
-    ASSERT_EQ(n1.distanceKey(), 256);
+    ASSERT_EQ(n1.distanceKey(), 255);
 }

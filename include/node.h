@@ -1,5 +1,6 @@
 #include <array>
 #include <list>
+#include <iostream>
 
 std::array<unsigned int, 32> generateRandomUID();
 std::array<unsigned int, 32> makeUid(char c);
@@ -8,9 +9,14 @@ class UID {
 public:
     UID();
     UID(std::array<unsigned int, 32> data);
+    friend UID operator^(const UID& first, const UID& second);
     bool operator==(const UID& first) const;
     bool operator!=(const UID& first) const;
+    std::ostream& operator<<(std::ostream &output);
     const unsigned int& operator[](int x) const;
+    int distanceKey();
+    std::array<unsigned int, 32> getData();
+    std::string getDataString();
 private:
     std::array<unsigned int, 32> data;
 };
