@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 2.8.8)
+set(CMAKE_CXX_COMPILER "/usr/local/bin/g++-4.9")
 project(gtest_builder C CXX)
 include(ExternalProject)
 
@@ -7,6 +8,7 @@ ExternalProject_Add(googletest
     CMAKE_ARGS -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG:PATH=DebugLibs
                -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE:PATH=ReleaseLibs
                -DCMAKE_CXX_FLAGS=${MSVC_COMPILER_DEFS}
+               -DCMAKE_CXX_COMPILER=/usr/local/bin/g++-4.9
                -Dgtest_force_shared_crt=ON
      PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
 # Disable install step
