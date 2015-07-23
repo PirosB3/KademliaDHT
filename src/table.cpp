@@ -56,3 +56,8 @@ void Table::update(shared_ptr<Node> new_node) {
         bucketList->push_back(new_node);
     }
 }
+
+vector<shared_ptr<Node> > Table::findNearest(UID* source) {
+    int bucketN = (this->node->uid ^ *source).distanceKey();
+    return this->findNearestFromBucket(bucketN, source);
+}

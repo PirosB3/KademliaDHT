@@ -12,6 +12,7 @@ public:
     void update(shared_ptr<Node> new_node);
     array<list<shared_ptr<Node> >, 256> buckets;
     vector<shared_ptr<Node> > findNearestFromBucket(unsigned int bucket, UID* source);
+    vector<shared_ptr<Node> > findNearest(UID* source);
 private:
     std::shared_ptr<Node> node;
 };

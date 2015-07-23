@@ -41,7 +41,10 @@ include_directories(${EXT_PROJECTS_DIR}/json11)
 
 file(GLOB TEST_SRC_FILES ${PROJECT_SOURCE_DIR}/test/*.cpp)
 file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
-add_executable(${PROJECT_TEST_NAME} ${TEST_SRC_FILES} ${SRC_FILES})
+set(TESTING_SRC_FILES ${SRC_FILES})
+list(REMOVE_ITEM TESTING_SRC_FILES ${PROJECT_SOURCE_DIR}/src/main.cpp)
+add_executable(${PROJECT_TEST_NAME} ${TEST_SRC_FILES} ${TESTING_SRC_FILES})
+add_executable(${PROJECT_NAME_STR} ${SRC_FILES})
 add_dependencies(${PROJECT_TEST_NAME} googletest)
 add_dependencies(${PROJECT_TEST_NAME} json11)
 #add_dependencies(${PROJECT_TEST_NAME} zmqpp)
@@ -51,6 +54,10 @@ target_link_libraries(${PROJECT_TEST_NAME}
     ${GTEST_LIBS_DIR}/libgtest.a
     ${GTEST_LIBS_DIR}/libgtest_main.a
     )
+
+target_link_libraries(${PROJECT_NAME_STR} json11)
+
+target_link_libraries(${PROJECT_NAME_STR} zmqpp)
 
 target_link_libraries(${PROJECT_TEST_NAME} json11)
 

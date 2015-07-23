@@ -5,7 +5,7 @@ using namespace std;
 
 class Shortlist {
 public:
-    Shortlist(UID target, Table* table, vector<shared_ptr<Node> > initial_shortlist);
+    Shortlist(UID target, shared_ptr<Table> table, vector<shared_ptr<Node> > initial_shortlist);
     std::set<shared_ptr<Node>> seen;
     vector<tuple<int, shared_ptr<Node> > > fronteer;
     bool canContinue();
