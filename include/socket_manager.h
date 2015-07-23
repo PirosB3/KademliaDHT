@@ -2,21 +2,25 @@
 #include <memory>
 
 #include "zmqpp/zmqpp.hpp"
+#include "json11.hpp"
 
 using namespace std;
 
-//class DistroSocket {
-//public:
-    //DistroSocket(shared_ptr<Node> node);
-    //virtual string send(string data) = 0;
-//};
+class ZMQSocket {
+public:
+    ZMQSocket(shared_ptr<Node> from, shared_ptr<Node> to, zmqpp::context_t* context);
+    tuple<string, bool> send(string key, json11::Json data);
+protected:
+    shared_ptr<Node> rootNode;
+    shared_ptr<Node> node;
+    zmqpp::context_t* context;
+};
 
-//class StringSocket : public DistroSocket {
 class StringSocket {
 public:
-    StringSocket(shared_ptr<Node> node);
+    StringSocket(shared_ptr<Node> from, shared_ptr<Node> to, zmqpp::context_t* context);
     string dataSent;
-    string send(string key, string data);
+    string send(string key, json11::Json data);
 protected:
     shared_ptr<Node> rootNode;
 };
@@ -24,19 +28,21 @@ protected:
 template<class SOCKET_TYPE>
 class SocketManager {
 public:
-    SocketManager(shared_ptr<Node> rootNode);
+    SocketManager(shared_ptr<Node> node);
     shared_ptr<SOCKET_TYPE> getSocket(shared_ptr<Node> node);
 private:
     shared_ptr<Node> rootNode;
+    zmqpp::context_t context;
 };
 
 template<class SOCKET_TYPE>
 SocketManager<SOCKET_TYPE>::SocketManager(shared_ptr<Node> node) {
     this->rootNode = node;
+    this->context = zmqpp::context_t();
 }
 
 template<class SOCKET_TYPE>
 shared_ptr<SOCKET_TYPE> SocketManager<SOCKET_TYPE>::getSocket(shared_ptr<Node> node) {
-    shared_ptr<SOCKET_TYPE> result(new SOCKET_TYPE(node));
+    shared_ptr<SOCKET_TYPE> result(new SOCKET_TYPE(this->rootNode, node, &this->context));
     return result;
 }

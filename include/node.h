@@ -29,7 +29,7 @@ public:
     bool operator==(const Node& first) const;
     bool operator!=(const Node& first) const;
     int distanceKey();
-protected:
-    unsigned int port;
+    int port;
     const char* host;
+protected:
 };
