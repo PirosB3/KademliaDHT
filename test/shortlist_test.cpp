@@ -16,7 +16,7 @@ TEST(Shortlist, exists) {
         shared_ptr<Node>(new Node(makeUid('f'), "localhost", 3006)),
     };
     Table t(current);
-    Shortlist s(current->uid, target, &t, nodes);
+    Shortlist s(target, &t, nodes);
     ASSERT_EQ(s.seen.size(), 0);
     ASSERT_EQ(s.fronteer.size(), 5);
     ASSERT_EQ(s.canContinue(), true);

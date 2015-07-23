@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Shortlist::Shortlist(UID current, UID target, Table* table, vector<shared_ptr<Node> > initial_shortlist) {
+Shortlist::Shortlist(UID target, Table* table, vector<shared_ptr<Node> > initial_shortlist) {
     this->target = target;
     this->atLeastOneWorked = true;
     this->addToFronteer(initial_shortlist);
