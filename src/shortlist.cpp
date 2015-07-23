@@ -25,7 +25,7 @@ vector<shared_ptr<Node> > Shortlist::getAlpha() {
          [](const tuple<int, shared_ptr<Node>>& a,
             const tuple<int, shared_ptr<Node>>& b) -> bool
          {
-            return get<0>(a) > get<0>(b);
+            return get<0>(a) < get<0>(b);
          });
 
     bool atLeastOneWorked = false;
