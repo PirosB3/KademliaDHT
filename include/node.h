@@ -10,6 +10,7 @@ std::array<unsigned int, 32> makeUid(char c);
 
 class UID {
 public:
+    static std::array<unsigned int, 32> fromDataString(std::string data);
     UID();
     UID(std::array<unsigned int, 32> data);
     friend UID operator^(const UID& first, const UID& second);

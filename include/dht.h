@@ -6,7 +6,10 @@ using namespace std;
 class DHT {
 public:
     DHT(shared_ptr<Table> table, shared_ptr<Node> bootstrap);
-private:
+    thread* run();
     shared_ptr<Table> table;
+private:
+    void _run();
     SocketManager<ZMQSocket>* socketManager;
+    thread thread_id;
 };

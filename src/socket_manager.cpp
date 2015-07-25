@@ -33,8 +33,8 @@ std::tuple<string, bool> ZMQSocket::send(string key, json11::Json data) {
         {"sender", json11::Json::object {
             {"host", this->rootNode->host},
             {"port", this->rootNode->port},
+            {"uid", this->rootNode->uid.getDataString()}
         }},
-        {"uid", this->rootNode->uid.getDataString()},
         {"key", key},
         {"data", data}
     };

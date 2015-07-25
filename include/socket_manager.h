@@ -3,6 +3,7 @@
 
 #include "zmqpp/zmqpp.hpp"
 #include "json11.hpp"
+#include "context.h"
 
 using namespace std;
 
@@ -30,19 +31,20 @@ class SocketManager {
 public:
     SocketManager(shared_ptr<Node> node);
     shared_ptr<SOCKET_TYPE> getSocket(shared_ptr<Node> node);
+    zmqpp::context_t* context;
 private:
     shared_ptr<Node> rootNode;
-    zmqpp::context_t context;
 };
 
 template<class SOCKET_TYPE>
 SocketManager<SOCKET_TYPE>::SocketManager(shared_ptr<Node> node) {
     this->rootNode = node;
-    this->context = zmqpp::context_t();
+    this->context = SingletonStruct<zmqpp::context_t>::getInstance();
+    //this->context = SingletonStruct::getInstance();
 }
 
 template<class SOCKET_TYPE>
 shared_ptr<SOCKET_TYPE> SocketManager<SOCKET_TYPE>::getSocket(shared_ptr<Node> node) {
-    shared_ptr<SOCKET_TYPE> result(new SOCKET_TYPE(this->rootNode, node, &this->context));
+    shared_ptr<SOCKET_TYPE> result(new SOCKET_TYPE(this->rootNode, node, this->context));
     return result;
 }

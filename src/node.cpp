@@ -28,6 +28,17 @@ UID::UID(std::array<unsigned int, 32> data) {
     this->data = data;
 }
 
+std::array<unsigned int, 32> UID::fromDataString(std::string data) {
+    std::array<unsigned int, 32> uidArray;
+    std::istringstream stream(data);
+    unsigned int byte;
+    for(int i=0; i < 32; i++) {
+        stream >> byte;
+        uidArray[i] = byte;
+    }
+    return uidArray;
+}
+
 bool UID::operator==(const UID& first) const {
     return this->data == first.data;
 }
@@ -104,13 +115,14 @@ std::shared_ptr<Node> Node::fromJson(json11::Json object) {
     int port = object["port"].int_value();
     std::string host = object["host"].string_value();
 
-    std::istringstream stream(object["uid"].string_value());
-    auto uidArray = makeUid(0);
-    unsigned int byte;
-    for(int i=0; i < 32; i++) {
-        stream >> byte;
-        uidArray[i] = byte;
-    }
+    std::array<unsigned int, 32> uidArray = UID::fromDataString(object["uid"].string_value());
+    //std::istringstream stream();
+    //auto uidArray = makeUid(0);
+    //unsigned int byte;
+    //for(int i=0; i < 32; i++) {
+        //stream >> byte;
+        //uidArray[i] = byte;
+    //}
     return std::shared_ptr<Node>(new Node(
         uidArray,
         host,
