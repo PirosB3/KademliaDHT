@@ -12,8 +12,8 @@ string StringSocket::send(string key, json11::Json data) {
         {"sender", json11::Json::object {
             {"host", this->rootNode->host},
             {"port", this->rootNode->port},
+            {"uid", this->rootNode->uid.getDataString()}
         }},
-        {"uid", this->rootNode->uid.getDataString()},
         {"key", key},
         {"data", data}
     };
@@ -57,7 +57,7 @@ std::tuple<string, bool> ZMQSocket::send(string key, json11::Json data) {
     // part 2: receive REP
     zmqpp::poller poller;
     poller.add(s, zmqpp::poller::poll_in);
-    poller.poll(1000);
+    poller.poll(400);
 
     if ((poller.events(s) & zmqpp::poller::poll_in) > 0) {
         string result;

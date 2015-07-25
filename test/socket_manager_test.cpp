@@ -18,7 +18,7 @@ TEST(SocketManager, sendsMessages) {
     string err;
     ASSERT_EQ(
          json11::Json::parse(ds->dataSent, err),
-         json11::Json::parse("{\"data\": {\"node\": \"12345\"}, \"key\": \"FIND_NODE\", \"sender\": {\"host\": \"localhost\", \"port\": 3000}, \"uid\": \"97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 \"}", err)
+         json11::Json::parse("{\"data\": {\"node\": \"12345\"}, \"key\": \"FIND_NODE\", \"sender\": {\"host\": \"localhost\", \"port\": 3000, \"uid\": \"97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 \"}}", err)
     );
 }
 

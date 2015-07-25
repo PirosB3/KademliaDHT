@@ -1,7 +1,10 @@
 #include <array>
 #include <list>
 #include <iostream>
+#include <memory>
+#include "json11.hpp"
 
+#pragma once
 std::array<unsigned int, 32> generateRandomUID();
 std::array<unsigned int, 32> makeUid(char c);
 
@@ -23,13 +26,14 @@ private:
 
 class Node {
 public:
-    Node(std::array<unsigned int, 32> uid, const char* host, unsigned int port);
+    static std::shared_ptr<Node> fromJson(json11::Json object);
+    Node(std::array<unsigned int, 32> uid, std::string host, unsigned int port);
     UID uid;
     friend UID operator^(const Node& first, const Node& second);
     bool operator==(const Node& first) const;
     bool operator!=(const Node& first) const;
     int distanceKey();
     int port;
-    const char* host;
+    std::string host;
 protected:
 };

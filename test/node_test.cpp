@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include <array>
+#include "json11.hpp"
 
 #include "node.h"
 
@@ -47,4 +48,15 @@ TEST(Node, distanceKeyZeros) {
     std::array<unsigned int, 32> first = makeUid(0);
     Node n1(first, "localhost", 3001);
     ASSERT_EQ(n1.distanceKey(), 255);
+}
+
+TEST(Node, canDeserializeAndSerialize) {
+    std::string err;
+    auto data = json11::Json::parse("{\"data\": {\"node\": \"12345\"}, \"key\": \"FIND_NODE\", \"sender\": {\"host\": \"localhost\", \"port\": 3000, \"uid\": \"97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 97 \"}}", err);
+    std::shared_ptr<Node> node = Node::fromJson(data["sender"]);
+    ASSERT_EQ(node->host, "localhost");
+    ASSERT_EQ(node->port, 3000);
+    for(unsigned int &i : node->uid.getData()) {
+        ASSERT_EQ(i, 97);
+    }
 }

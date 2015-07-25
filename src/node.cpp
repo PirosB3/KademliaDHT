@@ -40,7 +40,7 @@ const unsigned int& UID::operator[](int x) const {
     return this->data[x];
 }
 
-Node::Node(std::array<unsigned int, 32> uid, const char* host, unsigned int port) {
+Node::Node(std::array<unsigned int, 32> uid, std::string host, unsigned int port) {
     this->uid = UID(uid);
     this->host = host;
     this->port = port;
@@ -96,4 +96,24 @@ bool Node::operator==(const Node& first) const {
 
 bool Node::operator!=(const Node& first) const {
     return this->uid != first.uid;
+}
+
+
+std::shared_ptr<Node> Node::fromJson(json11::Json object) {
+    // port and host
+    int port = object["port"].int_value();
+    std::string host = object["host"].string_value();
+
+    std::istringstream stream(object["uid"].string_value());
+    auto uidArray = makeUid(0);
+    unsigned int byte;
+    for(int i=0; i < 32; i++) {
+        stream >> byte;
+        uidArray[i] = byte;
+    }
+    return std::shared_ptr<Node>(new Node(
+        uidArray,
+        host,
+        port
+    ));
 }

@@ -15,9 +15,9 @@ shared_ptr<Node> Table::getNode() {
     return this->node;
 }
 
-vector<shared_ptr<Node> > Table::findNearestFromBucket(unsigned int startingBucket, UID* source) {
+vector<shared_ptr<Node> > Table::findNearestFromBucket(int startingBucket, UID* source) {
     vector<shared_ptr<Node> > results;
-    for (int i=0; i < 128; i++) {
+    for (int i=0; i < 256; i++) {
         bool finishedLeft = false;
         bool finishedRight = false;
 
