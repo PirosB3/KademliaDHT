@@ -54,7 +54,6 @@ void DHT::_run() {
     stream << "tcp://*:" << this->table->getNode()->port;
 
     zmqpp::context* context = SingletonStruct<zmqpp::context_t>::getInstance();
-    //zmqpp::context* context = SingletonStruct::getInstance();
     zmqpp::socket receiver(*context, zmqpp::socket_type::rep);
     receiver.bind(stream.str());
 

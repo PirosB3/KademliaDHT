@@ -40,7 +40,6 @@ template<class SOCKET_TYPE>
 SocketManager<SOCKET_TYPE>::SocketManager(shared_ptr<Node> node) {
     this->rootNode = node;
     this->context = SingletonStruct<zmqpp::context_t>::getInstance();
-    //this->context = SingletonStruct::getInstance();
 }
 
 template<class SOCKET_TYPE>

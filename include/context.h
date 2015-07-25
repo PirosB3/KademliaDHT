@@ -29,19 +29,3 @@ ITEM* SingletonStruct<ITEM>::getInstance() {
     m->unlock();
     return instance;
 }
-
-
-//class SingletonStruct {
-//public:
-    //static zmqpp::context* getInstance();
-    //SingletonStruct() {}
-//private:
-    //static zmqpp::context* instance;
-//};
-
-//zmqpp::context* SingletonStruct::instance = nullptr;
-
-//zmqpp::context* SingletonStruct::getInstance() {
-    //return instance;
-//}
-
