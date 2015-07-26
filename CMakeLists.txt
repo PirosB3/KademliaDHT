@@ -56,12 +56,12 @@ target_link_libraries(${PROJECT_TEST_NAME}
     )
 
 target_link_libraries(${PROJECT_NAME_STR} json11)
-
 target_link_libraries(${PROJECT_NAME_STR} zmqpp)
+target_link_libraries(${PROJECT_NAME_STR} crypto)
 
 target_link_libraries(${PROJECT_TEST_NAME} json11)
-
 target_link_libraries(${PROJECT_TEST_NAME} zmqpp)
+target_link_libraries(${PROJECT_TEST_NAME} crypto)
 
 target_link_libraries(${PROJECT_TEST_NAME} ${CMAKE_THREAD_LIBS_INIT})
 

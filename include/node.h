@@ -7,9 +7,11 @@
 #pragma once
 std::array<unsigned int, 32> generateRandomUID();
 std::array<unsigned int, 32> makeUid(char c);
+void sha256(char *string, char outputBuffer[65]);
 
 class UID {
 public:
+    static std::array<unsigned int, 32> fromHash(std::string data);
     static std::array<unsigned int, 32> fromDataString(std::string data);
     UID();
     UID(std::array<unsigned int, 32> data);

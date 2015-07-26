@@ -1,9 +1,25 @@
 #include <iostream>
 #include <list>
 #include <cstdlib>
+#include <cstring>
 #include <sstream>
 
 #include "node.h"
+#include "openssl/sha.h"
+
+void sha256(const char *string, char outputBuffer[65]) {
+    unsigned char hash[SHA256_DIGEST_LENGTH];
+    SHA256_CTX sha256;
+    SHA256_Init(&sha256);
+    SHA256_Update(&sha256, string, strlen(string));
+    SHA256_Final(hash, &sha256);
+    int i = 0;
+    for(i = 0; i < SHA256_DIGEST_LENGTH; i++)
+    {
+        sprintf(outputBuffer + (i * 2), "%02x", hash[i]);
+    }
+    outputBuffer[64] = 0;
+}
 
 std::array<unsigned int, 32> generateRandomUID() {
     std::array<unsigned int, 32> result;
@@ -37,6 +53,24 @@ std::array<unsigned int, 32> UID::fromDataString(std::string data) {
         uidArray[i] = byte;
     }
     return uidArray;
+}
+
+std::array<unsigned int, 32> UID::fromHash(std::string data) {
+    char output[65];
+    sha256(data.c_str(), output);
+
+    std::array<unsigned int, 32> result;
+    int counter = 0;
+
+    for (int i=0; i < 64; i+=2) {
+        std::stringstream ss;
+        ss << std::hex << output[i] << output[i+1];
+        unsigned int k;
+        ss >> k;
+        result[counter] = k;
+        counter++;
+    }
+    return result;
 }
 
 bool UID::operator==(const UID& first) const {

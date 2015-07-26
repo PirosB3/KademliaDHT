@@ -60,3 +60,13 @@ TEST(Node, canDeserializeAndSerialize) {
         ASSERT_EQ(i, 97);
     }
 }
+
+TEST(UID, canBeGeneratedFromHash) {
+    auto res = UID::fromHash("Hello World!");
+    std::array<unsigned int, 32> expected = {
+        127, 131, 177, 101, 127, 241, 252, 83, 185, 45, 193,
+        129, 72, 161, 214, 93, 252, 45, 75, 31, 163, 214, 119,
+        40, 74, 221, 210, 0, 18, 109, 144, 105
+    };
+    ASSERT_EQ(res, expected);
+}
