@@ -29,3 +29,30 @@ TEST(Shortlist, exists) {
     ASSERT_EQ(s.seen.size(), 5);
     ASSERT_EQ(s.canContinue(), false);
 };
+
+TEST(Shortlist, addsToTable) {
+    shared_ptr<Node> current(new Node(makeUid('z'), "localhost", 3002));
+    UID target(makeUid('a'));
+
+    vector<shared_ptr<Node> > nodes = {
+        shared_ptr<Node>(new Node(makeUid('b'), "localhost", 3002)),
+        shared_ptr<Node>(new Node(makeUid('c'), "localhost", 3003)),
+        shared_ptr<Node>(new Node(makeUid('d'), "localhost", 3004)),
+        shared_ptr<Node>(new Node(makeUid('e'), "localhost", 3005)),
+        shared_ptr<Node>(new Node(makeUid('f'), "localhost", 3006)),
+    };
+    shared_ptr<Table> t(new Table(current));
+    ASSERT_EQ(
+        t->findNearest(&target).size(),
+        0
+    );
+
+    Shortlist s(target, t, nodes);
+    s.addToFronteer(nodes);
+
+    // Assert each item was added correctly
+    ASSERT_EQ(
+        t->findNearest(&target).size(),
+        5
+    );
+}

@@ -10,8 +10,9 @@ public:
     vector<tuple<int, shared_ptr<Node> > > fronteer;
     bool canContinue();
     vector<shared_ptr<Node> > getAlpha();
-private:
     void addToFronteer(vector<shared_ptr<Node> > nodes);
+private:
     UID target;
     bool atLeastOneWorked;
+    shared_ptr<Table> table;
 };

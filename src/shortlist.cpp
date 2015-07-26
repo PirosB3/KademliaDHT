@@ -4,15 +4,21 @@ using namespace std;
 
 Shortlist::Shortlist(UID target, shared_ptr<Table> table, vector<shared_ptr<Node> > initial_shortlist) {
     this->target = target;
+    this->table = table;
     this->atLeastOneWorked = true;
     this->addToFronteer(initial_shortlist);
 }
 
 void Shortlist::addToFronteer(vector<shared_ptr<Node> > nodes) {
     for(shared_ptr<Node> item : nodes) {
-        UID xorr = item->uid ^ target;
-        tuple<int, shared_ptr<Node> > pair = forward_as_tuple(xorr.distanceKey(), item);
-        this->fronteer.push_back(pair);
+        bool isIn = this->seen.find(item) != this->seen.end();
+        bool isCurrentNode = this->table->getNode()->uid == item->uid;
+        if (!isIn && !isCurrentNode) {
+            UID xorr = item->uid ^ target;
+            tuple<int, shared_ptr<Node> > pair = forward_as_tuple(xorr.distanceKey(), item);
+            this->fronteer.push_back(pair);
+            this->table->update(item);
+        }
     }
 }
 

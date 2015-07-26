@@ -57,7 +57,7 @@ std::tuple<string, bool> ZMQSocket::send(string key, json11::Json data) {
     // part 2: receive REP
     zmqpp::poller poller;
     poller.add(s, zmqpp::poller::poll_in);
-    poller.poll(400);
+    poller.poll(10000);
 
     if ((poller.events(s) & zmqpp::poller::poll_in) > 0) {
         string result;

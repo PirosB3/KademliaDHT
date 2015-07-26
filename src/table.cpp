@@ -35,7 +35,12 @@ vector<shared_ptr<Node> > Table::findNearestFromBucket(int startingBucket, UID* 
                 results.push_back(node);
             }
         }
-        if ((finishedRight && finishedLeft) || (results.size() >= 20)) break;
+        if ((finishedRight && finishedLeft) || (results.size() >= 20)) {
+            break;
+        }
+    }
+    while (results.size() > 20) {
+        results.pop_back();
     }
     return results;
 }
