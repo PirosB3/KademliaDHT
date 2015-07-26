@@ -8,9 +8,7 @@ using namespace std;
 DHT::DHT(shared_ptr<Table> table, shared_ptr<Node> bootstrap) {
     this->table = table;
     this->socketManager = new SocketManager<ZMQSocket>(this->table->getNode());
-    cout << "Initializing: " << this->table->getNode()->uid.getDataString() << endl;
     if (bootstrap != nullptr) {
-        cout << "Bootstrapping from: " << bootstrap->uid.getDataString() << endl;
         // Add node and run iterative find nodes
         UID uid = this->table->getNode()->uid;
         this->table->update(bootstrap);
@@ -34,7 +32,6 @@ DHT::DHT(shared_ptr<Table> table, shared_ptr<Node> bootstrap) {
                 if (std::get<1>(result) == true) {
                     string err;
                     json11::Json::array res = json11::Json::parse(std::get<0>(result), err)["response"].array_items();
-                    cout << "Found number of nodes: " << res.size() << endl;
 
                     vector<shared_ptr<Node> > newNodes;
                     for(auto &obj : res) {
@@ -43,7 +40,7 @@ DHT::DHT(shared_ptr<Table> table, shared_ptr<Node> bootstrap) {
                     }
                     s.addToFronteer(newNodes);
                 } else {
-                    cout << "FAIL" << endl;
+                    cout << "FAIL FIND_NODE" << endl;
                 }
             }
         }
@@ -99,10 +96,9 @@ void DHT::_run() {
             // Send response message
             receiver.send(responseMessage);
         } else if (key == "STORE_VALUE") {
-            string hashKey = item["data"]["hash"].string_value();
+            string hashKey = item["data"]["hashKey"].string_value();
             string value = item["data"]["value"].string_value();
             this->data[hashKey] = value;
-            cout << "STORED " << hashKey << endl;
 
             zmqpp::message responseMessage;
             json11::Json response = json11::Json::object{
@@ -110,17 +106,82 @@ void DHT::_run() {
             };
             responseMessage << response.dump();
             receiver.send(responseMessage);
+        } else if (key == "FIND_VALUE") {
+            json11::Json response;
+
+            UID uid = UID::fromDataString(item["data"]["hashKey"].string_value());
+            string hashKey = uid.getDataString();
+            if (this->data.find(hashKey) != this->data.end()) {
+                response = json11::Json::object{
+                    {"response", json11::Json::object {
+                        {"value", this->data[hashKey]}
+                    }}
+                };
+            } else {
+                vector<shared_ptr<Node> > result = this->table->findNearest(&uid);
+
+                json11::Json::array toReturn;
+                string err;
+                for(shared_ptr<Node> n : result) {
+                    toReturn.push_back(json11::Json::object {
+                        {"host", n->host},
+                        {"port", n->port},
+                        {"uid", n->uid.getDataString()}
+                    });
+                }
+                response = json11::Json::object{
+                    {"response", toReturn}
+                };
+            }
+
+            zmqpp::message responseMessage;
+            responseMessage << response.dump();
+            receiver.send(responseMessage);
         }
     }
 }
 
-string DHT::get(string key) {
+tuple<string, bool> DHT::get(string key) {
     UID uid = UID::fromHash(key);
     string hashKey = uid.getDataString();
     if (this->data.find(hashKey) != this->data.end()) {
-        return this->data[hashKey];
+        return forward_as_tuple(this->data[hashKey], true);
     }
-    return "";
+
+    // Value is not local, start iterative find value
+    Shortlist s(
+        uid,
+        this->table, 
+        this->table->findNearest(&uid)
+    );
+    while (s.canContinue()) {
+        vector<shared_ptr<Node> > alphaNodes = s.getAlpha();
+        for (shared_ptr<Node>& node : alphaNodes) {
+            auto result = this->socketManager->getSocket(node)->send(
+                "FIND_VALUE",
+                json11::Json::object {
+                    {"hashKey", uid.getDataString()}
+                }
+            );
+            if (std::get<1>(result) == true) {
+                string err;
+                json11::Json res = json11::Json::parse(std::get<0>(result), err)["response"];
+                if (res.is_object()) {
+                    return forward_as_tuple(res["value"].string_value(), true);
+                } else if (res.is_array()) {
+                    vector<shared_ptr<Node> > newNodes;
+                    for(auto &obj : res.array_items()) {
+                        shared_ptr<Node> n = Node::fromJson(obj);
+                        newNodes.push_back(n);
+                    }
+                    s.addToFronteer(newNodes);
+                }
+            } else {
+                cout << "FAIL FIND_VALUE" << endl;
+            }
+        }
+    }
+    return forward_as_tuple("", false);
 }
 
 void DHT::set(string key, string value) {
@@ -135,8 +196,8 @@ void DHT::set(string key, string value) {
         auto result = this->socketManager->getSocket(node)->send(
             "STORE_VALUE",
             json11::Json::object {
-                {"hash", key},
-                {"value", hashKey}
+                {"hashKey", hashKey},
+                {"value", value}
             }
         );
     }

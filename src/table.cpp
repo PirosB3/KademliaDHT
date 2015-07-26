@@ -53,13 +53,13 @@ void Table::update(shared_ptr<Node> new_node) {
     UID res = *this->node ^ *new_node;
     int bucketN = res.distanceKey();
 
-    list<shared_ptr<Node> >* bucketList = &this->buckets[bucketN];
-
     // Check if value is already there. if it isn't, add it
-    bool found = find(bucketList->begin(), bucketList->end(), new_node) != bucketList->end();
-    if (!found) {
-        bucketList->push_back(new_node);
+    for(shared_ptr<Node> n : this->buckets[bucketN]) {
+        if (n->uid == new_node->uid) {
+            return;
+        }
     }
+    this->buckets[bucketN].push_back(new_node);
 }
 
 vector<shared_ptr<Node> > Table::findNearest(UID* source) {

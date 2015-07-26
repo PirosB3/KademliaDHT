@@ -14,5 +14,6 @@ public:
 private:
     UID target;
     bool atLeastOneWorked;
+    bool hasDoneAtLeastOneIteration;
     shared_ptr<Table> table;
 };

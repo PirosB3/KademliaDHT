@@ -35,6 +35,7 @@ int main(int argc, char* argv[]) {
     int randomItem = rand() % dhts.size();
     dhts[randomItem]->set("Hello", "World");
     this_thread::sleep_for(chrono::seconds(2));
-    cout << dhts[randomItem]->get("Hello") << endl;
+    cout << "NOW" << endl;
+    cout << get<0>(dhts[randomItem]->get("Hello")) << endl;
     anyThread->join();
 }

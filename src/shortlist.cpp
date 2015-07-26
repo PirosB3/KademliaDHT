@@ -6,6 +6,7 @@ Shortlist::Shortlist(UID target, shared_ptr<Table> table, vector<shared_ptr<Node
     this->target = target;
     this->table = table;
     this->atLeastOneWorked = true;
+    this->hasDoneAtLeastOneIteration = false;
     this->addToFronteer(initial_shortlist);
 }
 
@@ -23,7 +24,7 @@ void Shortlist::addToFronteer(vector<shared_ptr<Node> > nodes) {
 }
 
 bool Shortlist::canContinue() {
-    return (this->fronteer.size() < 20) && this->atLeastOneWorked;
+    return ((this->fronteer.size() < 20) && this->atLeastOneWorked) || !hasDoneAtLeastOneIteration;
 }
 
 vector<shared_ptr<Node> > Shortlist::getAlpha() {
@@ -46,5 +47,6 @@ vector<shared_ptr<Node> > Shortlist::getAlpha() {
         }
     }
     this->atLeastOneWorked = atLeastOneWorked;
+    this->hasDoneAtLeastOneIteration = true;
     return result;
 }

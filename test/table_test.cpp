@@ -14,6 +14,7 @@ TEST(TableTest, exists) {
 TEST(TableTest, updateNode) {
     std::shared_ptr<Node> n1(new Node(makeUid('a'), "localhost", 3001));
     std::shared_ptr<Node> n2(new Node(makeUid('b'), "localhost", 3002));
+    std::shared_ptr<Node> n3(new Node(n2->uid.getData(), "localhost", 3003));
     Table t(n1);
 
     // Increases bucket 6 by 1
@@ -22,6 +23,7 @@ TEST(TableTest, updateNode) {
 
     // Value already exists
     t.update(n2);
+    t.update(n3);
     ASSERT_EQ(t.buckets[6].size(), 1);
 
     // Adding itself is illegal

@@ -8,7 +8,7 @@ public:
     DHT(shared_ptr<Table> table, shared_ptr<Node> bootstrap);
     thread* run();
     void set(string key, string value);
-    string get(string key);
+    tuple<string, bool> get(string key);
     shared_ptr<Table> table;
 private:
     void _run();
