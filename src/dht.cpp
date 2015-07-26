@@ -154,9 +154,11 @@ tuple<string, bool> DHT::get(string key) {
         this->table, 
         this->table->findNearest(&uid)
     );
+    int nHops = -1;
     while (s.canContinue()) {
         vector<shared_ptr<Node> > alphaNodes = s.getAlpha();
         for (shared_ptr<Node>& node : alphaNodes) {
+            nHops++;
             auto result = this->socketManager->getSocket(node)->send(
                 "FIND_VALUE",
                 json11::Json::object {
@@ -167,6 +169,7 @@ tuple<string, bool> DHT::get(string key) {
                 string err;
                 json11::Json res = json11::Json::parse(std::get<0>(result), err)["response"];
                 if (res.is_object()) {
+                    cout << "Number of hops: " << nHops << endl;
                     return forward_as_tuple(res["value"].string_value(), true);
                 } else if (res.is_array()) {
                     vector<shared_ptr<Node> > newNodes;
